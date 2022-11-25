@@ -30,11 +30,17 @@ const run = async () => {
 
         app.get('/books', async (req, res) => {
             const categoryId = parseFloat(req.query.categoryId);
+            const userEmail = req.query.email;
             let query = {};
 
             if (categoryId) {
                 query = {
                     categoryId: categoryId
+                };
+            }
+            if (userEmail) {
+                query = {
+                    email: userEmail
                 };
             }
 
