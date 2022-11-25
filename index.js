@@ -18,6 +18,7 @@ const run = async () => {
     try {
         const booksCategoryCollection = client.db("bookStore").collection("bookCategories");
         const booksCollection = client.db("bookStore").collection("books");
+        const userCollection = client.db("bookStore").collection("users");
 
         app.get('/bookCategories', async (req, res) => {
             const query = {};
@@ -33,7 +34,7 @@ const run = async () => {
             if (categoryId) {
                 query = {
                     categoryId: categoryId
-                };        
+                };
             }
 
             const result = await booksCollection.find(query).toArray();
@@ -44,6 +45,12 @@ const run = async () => {
             const book = req.body;
             const result = await booksCollection.insertOne(book);
             res.send(result)
+        });
+
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await userCollection.insertOne(user);
+            res.send(result);
         });
 
     }
