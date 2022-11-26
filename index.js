@@ -66,6 +66,42 @@ const run = async () => {
             res.send(result);
         });
 
+        app.put('/users', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const options = { upsert: true };
+
+            const updatedDoc = {
+                $set: {
+                    email: user.email,
+                    uid: user.uid,
+                    role: 'buyer'
+                }
+            }
+
+            const result = await userCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+
+
+        // admin status api
+        app.get('/users/admins/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+
+            const user = await userCollection.findOne(query);
+            res.send({ isAdmin: user?.role === 'admin' })
+        });
+
+        // seller status api
+        app.get('/users/admins/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+
+            const user = await userCollection.findOne(query);
+            res.send({ isSeller: user?.role === 'seller' })
+        });
+
     }
 
     finally { }
