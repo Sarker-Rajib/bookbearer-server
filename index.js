@@ -96,14 +96,14 @@ const run = async () => {
             res.send(result);
         })
 
-        app.put('/advertise/:id', async (req, res) => {
-            const id = req.params;
+        app.put('/books/advertise/:id', async (req, res) => {
+            const id = req.params.id;
             const data = req.body
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
 
-            // console.log(id,advertise);
-            
+            // console.log(id, data, filter);
+
             const updatedDoc = {
                 $set: {
                     advertise: data.advertise,
@@ -112,6 +112,18 @@ const run = async () => {
             const result = await booksCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
+
+
+        // advertised books collection
+        app.get('/books/advertise', async (req, res) => {
+            const addProperty = req.query.advertise;
+            const query = {
+                advertise: addProperty
+            };
+
+            const adds = await booksCollection.find(query).toArray();
+            res.send(adds)
+        });
 
         // admin status api
         app.get('/users/admins/:email', async (req, res) => {
