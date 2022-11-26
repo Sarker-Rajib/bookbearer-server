@@ -73,6 +73,8 @@ const run = async () => {
 
             const updatedDoc = {
                 $set: {
+                    name: user.name,
+                    image: user.image,
                     email: user.email,
                     uid: user.uid,
                     role: 'buyer'
@@ -108,8 +110,21 @@ const run = async () => {
             const query = { email: email }
 
             const user = await userCollection.findOne(query);
-            res.send({ isSeller: user?.role === 'buyer' })
+            res.send({ isBuyer: user?.role === 'buyer' })
         });
+
+
+        // all sellers
+        app.get('/sellers', async (req, res) => {
+            const role = req.query.role;
+            const query = {
+                role: role
+            };
+
+            const sellers = await userCollection.find(query).toArray();
+            res.send(sellers)
+        });
+
 
     }
 
