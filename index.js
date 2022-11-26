@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
 require('dotenv').config();
 const app = express();
@@ -54,6 +54,17 @@ const run = async () => {
             res.send(result)
         });
 
+        // order/bookings
+        app.get('/bookings', async (req, res) => {
+            const email = req.query.email;
+            const query = {
+                email: email
+            };
+
+            const orders = await bookingsCollection.find(query).toArray();
+            res.send(orders)
+        });
+
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
             const result = await bookingsCollection.insertOne(booking);
@@ -85,6 +96,22 @@ const run = async () => {
             res.send(result);
         })
 
+        app.put('/advertise/:id', async (req, res) => {
+            const id = req.params;
+            const data = req.body
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+
+            // console.log(id,advertise);
+            
+            const updatedDoc = {
+                $set: {
+                    advertise: data.advertise,
+                }
+            }
+            const result = await booksCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
 
         // admin status api
         app.get('/users/admins/:email', async (req, res) => {
@@ -113,7 +140,6 @@ const run = async () => {
             res.send({ isBuyer: user?.role === 'buyer' })
         });
 
-
         // all sellers
         app.get('/sellers', async (req, res) => {
             const role = req.query.role;
@@ -124,8 +150,6 @@ const run = async () => {
             const sellers = await userCollection.find(query).toArray();
             res.send(sellers)
         });
-
-
     }
 
     finally { }
