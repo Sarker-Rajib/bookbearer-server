@@ -94,12 +94,21 @@ const run = async () => {
         });
 
         // seller status api
-        app.get('/users/admins/:email', async (req, res) => {
+        app.get('/users/sellers/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email: email }
 
             const user = await userCollection.findOne(query);
             res.send({ isSeller: user?.role === 'seller' })
+        });
+
+        // Buyer status api
+        app.get('/users/buyers/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email }
+
+            const user = await userCollection.findOne(query);
+            res.send({ isSeller: user?.role === 'buyer' })
         });
 
     }
