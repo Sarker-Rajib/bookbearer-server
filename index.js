@@ -125,13 +125,20 @@ const run = async () => {
         // all users
         app.get('/users', async (req, res) => {
             const role = req.query.role;
+            const email = req.query.email;
             let query = {};
 
             if (role) {
                 query = {
                     role: role
                 };
-            }
+            };
+
+            if (email) {
+                query = {
+                    email: email
+                };
+            };
 
             const sellers = await userCollection.find(query).toArray();
             res.send(sellers)
