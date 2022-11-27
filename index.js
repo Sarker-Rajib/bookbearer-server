@@ -200,7 +200,6 @@ const run = async () => {
             const user = await userCollection.findOne(query);
             res.send({ isBuyer: user?.role === 'buyer' })
         });
-
     }
 
     finally { }
