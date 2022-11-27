@@ -71,6 +71,7 @@ const run = async () => {
             res.send(result)
         });
 
+        // users api -----------------------------
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await userCollection.insertOne(user);
@@ -96,6 +97,40 @@ const run = async () => {
             res.send(result);
         })
 
+        app.put('/sellers/verify/:id', async (req, res) => {
+            const id = req.params.id;
+            const data = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+
+            // console.log(data.verified, filter);
+            const updatedDoc = {
+                $set: {
+                    verified: data.verified,
+                }
+            }
+
+            const result = await userCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
+        })
+
+        // all users
+        app.get('/users', async (req, res) => {
+            const role = req.query.role;
+            let query = {};
+
+            if (role) {
+                query = {
+                    role: role
+                };
+            }
+
+            const sellers = await userCollection.find(query).toArray();
+            res.send(sellers)
+        });
+        // ------------------------------------------------
+
+        // advertisement adding
         app.put('/books/advertise/:id', async (req, res) => {
             const id = req.params.id;
             const data = req.body
@@ -112,7 +147,6 @@ const run = async () => {
             const result = await booksCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
-
 
         // advertised books collection
         app.get('/books/advertise', async (req, res) => {
@@ -152,16 +186,6 @@ const run = async () => {
             res.send({ isBuyer: user?.role === 'buyer' })
         });
 
-        // all sellers
-        app.get('/sellers', async (req, res) => {
-            const role = req.query.role;
-            const query = {
-                role: role
-            };
-
-            const sellers = await userCollection.find(query).toArray();
-            res.send(sellers)
-        });
     }
 
     finally { }
