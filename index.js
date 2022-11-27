@@ -97,7 +97,7 @@ const run = async () => {
             res.send(result);
         })
 
-        app.put('/sellers/verify/:id', async (req, res) => {
+        app.put('/users/seller/verify/:id', async (req, res) => {
             const id = req.params.id;
             const data = req.body;
             const filter = { _id: ObjectId(id) };
@@ -113,6 +113,14 @@ const run = async () => {
             const result = await userCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
+
+        app.delete('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            // console.log(filter);
+            const result = await userCollection.deleteOne(filter);
+            res.send(result);
+        });
 
         // all users
         app.get('/users', async (req, res) => {
